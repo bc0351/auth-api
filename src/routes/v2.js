@@ -26,7 +26,6 @@ v2Router.patch('/:model/:id', bearerAuth, acl('update'), handleUpdate);
 v2Router.delete('/:model/:id', bearerAuth, acl('delete'), handleDelete);
 
 async function handleGetAll(req, res) {
-  console.log(req);
   let allRecords = await req.model.findAll();
   res.status(200).json(allRecords);
 }

@@ -34,7 +34,6 @@ authRouter.get('/secret', bearerAuth, async (req, res, next) => {
 });
 
 authRouter.get('/users', bearerAuth, acl('delete'), async (req, res, next) => {
-  console.log('/users', req.headers.authorization)
   const userRecords = await users.findAll({});
   const list = userRecords.map(user => user.username);
   res.status(200).json(list);
