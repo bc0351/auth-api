@@ -1,5 +1,4 @@
 'use strict';
-
 module.exports = (capability) => {
 
   return (req, res, next) => {
@@ -16,5 +15,4 @@ module.exports = (capability) => {
     }
 
   }
-
 }

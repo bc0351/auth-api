@@ -3,7 +3,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const SECRET = process.env.SECRET || 'secretstring';
+const SECRET = process.env.SECRET || 'cash-money';
 
 const userModel = (sequelize, DataTypes) => {
   const model = sequelize.define('Users', {
@@ -33,20 +33,14 @@ const userModel = (sequelize, DataTypes) => {
       }
     }
   });
-
   model.beforeCreate(async (user) => {
-    console.log(user);
     let hashedPass = await bcrypt.hash(user.password, 10);
-
-    console.log(hashedPass);
     user.password = hashedPass;
-    return user;
   });
 
   model.authenticateBasic = async function (username, password) {
     const user = await this.findOne({ where: { username } });
     const valid = await bcrypt.compare(password, user.password);
-    console.log(`authenticateBasic bscrypt.compare(${password},${user.password})`);
     if (valid) { return user; }
     throw new Error('Invalid User');
   };
@@ -54,14 +48,13 @@ const userModel = (sequelize, DataTypes) => {
   model.authenticateToken = async function (token) {
     try {
       const parsedToken = jwt.verify(token, SECRET);
-      const user = this.findOne({ where: { username: parsedToken.username } });
-      if (user) { return user; }
+      const user = await this.findOne({ where: { username: parsedToken.username } });
+      if (user) return user; 
       throw new Error("User Not Found");
     } catch (e) {
       throw new Error(e.message)
     }
   };
-
   return model;
 }
 

@@ -1,17 +1,17 @@
 'use strict';
 
 const base64 = require('base-64');
-const { users } = require('../models');
+const { users } = require('../../models/index');
 
 module.exports = async (req, res, next) => {
+  console.log(req.headers);
+  if (!req.headers.authentication) return _authError();
 
-  if (!req.headers.authorization) { return _authError(); }
-
-  let basic = req.headers.authorization.split(' ').pop();
+  let basic = req.headers.authentication.split(' ').pop();
   let [user, pass] = base64.decode(basic).split(':');
-  console.log(`authBasic ${user},${password}`);
+
   try {
-    req.user = await users.authenticateBasic(user, pass)
+  req.user = await users.authenticateBasic(user, pass);
     next();
   } catch (e) {
     _authError()
@@ -21,4 +21,4 @@ module.exports = async (req, res, next) => {
     res.status(403).send('Invalid Login');
   }
 
-}
+};
