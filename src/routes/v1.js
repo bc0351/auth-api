@@ -1,11 +1,12 @@
 'use strict';
 
 const express = require('express');
-const dataModules = require('../models');
+const dataModules = require('../models/index');
 
-const router = express.Router();
+const v1Router = express.Router();
 
-router.param('model', (req, res, next) => {
+v1Router.param('model', (req, res, next) => {
+  console.log(req.params);
   const modelName = req.params.model;
   if (dataModules[modelName]) {
     req.model = dataModules[modelName];
@@ -15,20 +16,20 @@ router.param('model', (req, res, next) => {
   }
 });
 
-router.post('/:model', handleCreate);
-router.get('/:model', handleGetAll);
-router.get('/:model/:id', handleGetOne);
-router.put('/:model/:id', handleUpdate);
-router.delete('/:model/:id', handleDelete);
+v1Router.post('/:model', handleCreate);
+v1Router.get('/:model', handleGetAll);
+v1Router.get('/:model/:id', handleGetOne);
+v1Router.put('/:model/:id', handleUpdate);
+v1Router.delete('/:model/:id', handleDelete);
 
 async function handleGetAll(req, res) {
-  let allRecords = await req.model.get();
+  let allRecords = await req.model.findAll();
   res.status(200).json(allRecords);
 }
 
 async function handleGetOne(req, res) {
   const id = req.params.id;
-  let theRecord = await req.model.get(id)
+  let theRecord = await req.model.findOne(id)
   res.status(200).json(theRecord);
 }
 
@@ -50,4 +51,4 @@ async function handleDelete(req, res) {
   let deletedRecord = await req.model.delete(id);
   res.status(200).json(deletedRecord);
 }
-module.exports = router;
+module.exports = v1Router;

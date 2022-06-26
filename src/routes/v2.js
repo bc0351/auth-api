@@ -4,11 +4,11 @@ const express = require('express');
 const basicAuth = require('../auth/middleware/basic');
 const bearerAuth = require('../auth/middleware/bearer');
 const acl = require('../auth/middleware/acl');
-const dataModules = require('../models');
+const dataModules = require('../models/index');
 
-const router = express.Router();
+const v2Router = express.Router();
 
-router.param('model', (req, res, next) => {
+v2Router.param('model', (req, res, next) => {
   const modelName = req.params.model;
   if (dataModules[modelName]) {
     req.model = dataModules[modelName];
@@ -18,22 +18,22 @@ router.param('model', (req, res, next) => {
   }
 });
 
-router.get('/:model/:id', basicAuth, handleGetOne);
-router.get('/:model', basicAuth, handleGetAll);
-router.post('/:model', bearerAuth, acl('create'), handleCreate);
-router.put('/:model/:id', bearerAuth, acl('update'), handleUpdate);
-router.patch('/:model/:id', bearerAuth, acl('update'), handleUpdate);
-router.delete('/:model/:id', bearerAuth, acl('delete'), handleDelete);
+v2Router.get('/:model/:id', basicAuth, handleGetOne);
+v2Router.get('/:model', basicAuth, handleGetAll);
+v2Router.post('/:model', bearerAuth, acl('create'), handleCreate);
+v2Router.put('/:model/:id', bearerAuth, acl('update'), handleUpdate);
+v2Router.patch('/:model/:id', bearerAuth, acl('update'), handleUpdate);
+v2Router.delete('/:model/:id', bearerAuth, acl('delete'), handleDelete);
 
 async function handleGetAll(req, res) {
   console.log(req);
-  let allRecords = await req.model.get();
+  let allRecords = await req.model.findAll();
   res.status(200).json(allRecords);
 }
 
 async function handleGetOne(req, res) {
   const id = req.params.id;
-  let theRecord = await req.model.get(id)
+  let theRecord = await req.model.findOne(id)
   res.status(200).json(theRecord);
 }
 
@@ -55,4 +55,4 @@ async function handleDelete(req, res) {
   let deletedRecord = await req.model.delete(id);
   res.status(200).json(deletedRecord);
 }
-module.exports = router;
+module.exports = v2Router;

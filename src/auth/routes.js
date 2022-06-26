@@ -40,5 +40,4 @@ authRouter.get('/users', bearerAuth, acl('delete'), async (req, res, next) => {
   res.status(200).json(list);
 });
 
-
 module.exports = authRouter;
