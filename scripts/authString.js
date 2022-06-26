@@ -5,7 +5,7 @@ function createBasicAuthString(username, password) {
     username: 'ben',
     password: 'password'
   };
-  return base64.encode(`Basic ${username}:${password}`);
+  return base64.encode(`${username}:${password}`);
 }
 console.log(createBasicAuthString('ben','password'));
 
