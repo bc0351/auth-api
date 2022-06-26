@@ -6,7 +6,6 @@ const dataModules = require('../models/index');
 const v1Router = express.Router();
 
 v1Router.param('model', (req, res, next) => {
-  console.log(req.params);
   const modelName = req.params.model;
   if (dataModules[modelName]) {
     req.model = dataModules[modelName];
