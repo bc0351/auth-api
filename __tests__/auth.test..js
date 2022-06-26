@@ -40,7 +40,7 @@ describe('1. Authentication and Authorization Tests', () => {
         encodedAuthString = base64.encode(decodedAuthString);
         let response = await request
             .post('/signin')
-            .set('Authentication',`Basic ${encodedAuthString}`);
+            .set('Authorization',`Basic ${encodedAuthString}`);
 
         expect(response.status).toEqual(200);
         expect(response.body.user.token).toBeTruthy();
